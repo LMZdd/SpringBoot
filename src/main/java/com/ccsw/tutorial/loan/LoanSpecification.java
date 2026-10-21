@@ -35,11 +35,21 @@ public class LoanSpecification implements Specification<Loan> {
         }
 
         if (criteria.getOperation().equalsIgnoreCase("<=")) {
-            return builder.lessThanOrEqualTo(root.<LocalDate>get(criteria.getKey()), (LocalDate) criteria.getValue());
+            Path<String> path = getPath(root);
+            if (path.getJavaType() == String.class) {
+                return builder.like(path, "%" + criteria.getValue() + "%");
+            } else {
+                return builder.lessThanOrEqualTo(root.<LocalDate>get(criteria.getKey()), (LocalDate) criteria.getValue());
+            }
         }
 
         if (criteria.getOperation().equalsIgnoreCase(">=")) {
-            return builder.greaterThanOrEqualTo(root.<LocalDate>get(criteria.getKey()), (LocalDate) criteria.getValue());
+            Path<String> path = getPath(root);
+            if (path.getJavaType() == String.class) {
+                return builder.like(path, "%" + criteria.getValue() + "%");
+            } else {
+                return builder.greaterThanOrEqualTo(root.<LocalDate>get(criteria.getKey()), (LocalDate) criteria.getValue());
+            }
         }
 
         return null;
